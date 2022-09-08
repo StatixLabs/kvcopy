@@ -1,4 +1,11 @@
 # CLIFIG
+## Install Instructions:
+
+### 1. Shell (Mac/Linux)
+Install the latest version:
+```
+curl -fsSL https://github.com/StatixLabs/clifig/raw/main/install.sh | bash
+```
 
 ### Testing:
 
