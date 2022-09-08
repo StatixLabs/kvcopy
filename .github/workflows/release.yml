@@ -12,5 +12,6 @@ jobs:
       uses: wangyoucao577/go-release-action@v1.30
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        goos: darwin
-        goarch: arm64
+        goos: linux
+        goarch: amd64
+        goversion: 1.18
