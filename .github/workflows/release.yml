@@ -8,10 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: build mac m1
-      uses: wangyoucao577/go-release-action@v1.30
+    - uses: wangyoucao577/go-release-action@v1.30
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: linux
         goarch: amd64
         goversion: 1.18
+        project_path: cmd/clifig
+  release-mac-m1:
+    name: release linux/amd64
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: wangyoucao577/go-release-action@v1.30
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: darwin
+        goarch: arm64
+        goversion: 1.18
+        project_path: cmd/clifig
