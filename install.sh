@@ -3,7 +3,7 @@
 set -e
 
 target="StatixLabs/clifig"
-version="0.0.2"
+version="0.0.3"
 exe_name="clifig"
 
 # eg. release-lab/whatchanged
