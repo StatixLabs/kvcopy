@@ -1,4 +1,4 @@
-name: Build
+name: Test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test-and-build:
+  test:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
@@ -22,6 +22,3 @@ jobs:
     
     - name: Run tests
       run: go test ./...
-
-    - name: Build
-      run: go build -v ./...
