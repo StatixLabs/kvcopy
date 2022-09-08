@@ -3,12 +3,12 @@ module clifig
 go 1.18
 
 require (
+	github.com/aws/aws-sdk-go v1.44.23
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.19.0
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.44.23 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
