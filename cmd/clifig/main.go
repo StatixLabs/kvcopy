@@ -4,33 +4,79 @@ import (
 	"clifig/pkg/auth"
 	"clifig/pkg/source"
 	"clifig/pkg/target"
+
 	"flag"
 	"fmt"
 )
 
 func main() {
-	region := flag.String("region", "us-east-1", "Set the AWS region.")
-	profile := flag.String("profile", "default", "Set the AWS SSO profile to use.")
-	keyPointer := flag.String("ssm-parameter-path", "", "set the SSM parameter store key path. It must being and end with a '/'")
+	input := flag.String("input", "", "*REQUIRED* select where to get config values from.")
+	output := flag.String("output", "", "*REQUIRED* select where the config values should go.")
+
+	region := flag.String("region", "", "Set the AWS region.")
+	profile := flag.String("profile", "", "Set the AWS SSO profile to use.")
+	prefix := flag.String("prefix", "", "The prefix to use for SSM.")
+	filePath := flag.String("filepath", "", "If using `file`, the path you want to read or write to.")
+
 	flag.Parse()
-	key := string(*keyPointer)
-	if key[:1] != "/" {
-		panic("'ssm-parameter-path' must begin with an '/'")
-	}
-	if key[len(key)-1:] != "/" {
-		panic("'ssm-parameter-path' must end with an '/'")
+	if *input == "" || *output == "" {
+		flag.Usage()
+		return
 	}
 
-	sess, err := auth.AWS(*region, *profile)
-	if err != nil {
-		fmt.Println(err)
+	var parameters map[string]string
+	switch checkInput := input; *checkInput {
+	case "file":
+		if *filePath == "" {
+			fmt.Println("You need to set `filepath` flag when using `file` input.")
+			return
+		}
+		parameters = source.File(*filePath)
+	case "ssm":
+		if *region == "" || *profile == "" || *prefix == "" {
+			fmt.Print("You must define region, profile and prefix when using SSM as an output.")
+			return
+		}
+		if string(*prefix)[:1] != "/" || string(*prefix)[len(*prefix)-1:] != "/" {
+			fmt.Print("'prefix' must begin and end with a '/'.")
+			return
+		}
+		sess, err := auth.AWS(*region, *profile)
+		if err != nil {
+			fmt.Println(err)
+		}
+		parameters, err = source.SSM(sess, *region, *prefix)
+		if err != nil {
+			fmt.Println(err)
+		}
+	default:
+		fmt.Printf("%s.\n", "You must select an input for this to work...")
+		return
 	}
 
-	param, err := source.SSM(sess, *region, key)
-	if err != nil {
-		fmt.Println(err)
+	switch checkOutput := output; *checkOutput {
+	case "env":
+		fmt.Println(target.Env(parameters))
+	case "ssm":
+		if *region == "" || *profile == "" || *prefix == "" {
+			fmt.Print("You must define region, profile and prefix when using SSM as an output.")
+			return
+		}
+		if string(*prefix)[:1] != "/" || string(*prefix)[len(*prefix)-1:] != "/" {
+			fmt.Print("'prefix' must begin and end with a '/'.")
+			return
+		}
+		sess, err := auth.AWS(*region, *profile)
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = target.SSM(sess, *region, parameters, *prefix)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
+	default:
+		fmt.Printf("%s.\n", "You must select an output for this to work...")
+		return
 	}
-
-	output := target.Env(param)
-	fmt.Println(output)
 }

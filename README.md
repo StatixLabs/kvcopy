@@ -7,6 +7,11 @@ Install the latest version:
 curl -fsSL https://github.com/StatixLabs/clifig/raw/main/install.sh | bash
 ```
 
+#### Usage
+```
+clifig --input ssm --output env --profile default --region us-east-1 --prefix /test/
+```
+
 ### Testing:
 
 Run Test:
