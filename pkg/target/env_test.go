@@ -13,7 +13,7 @@ var _ = Describe("Env", func() {
 			Expect(target.Env(map[string]string{"key": "value"})).To(Equal("key=value\n"))
 		})
 		It("displays multiple key=value strings", func() {
-			Expect(target.Env(map[string]string{"key": "value", "key1": "value1"})).To(Equal("key=value\nkey1=value1\n"))
+			Expect(target.Env(map[string]string{"key": "value", "key1": "value1"})).To(ContainSubstring("key=value\n"), ContainSubstring("key1=value1\n"))
 		})
 	})
 })
