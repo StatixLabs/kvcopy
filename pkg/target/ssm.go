@@ -14,7 +14,7 @@ func SSM(sess *session.Session, region string, values map[string]string, prefix 
 	ssmsvc := ssm.New(sess, aws.NewConfig().WithRegion(region))
 	parameters := ParseParameter(values, prefix)
 	for _, parameter := range parameters {
-		results, err := PutParameter(ssmsvc, parameter.Name, parameter.Value, parameter.ParamType)
+		results, err := PutParameter(ssmsvc, &parameter.Name, &parameter.Value, &parameter.ParamType)
 		if err != nil {
 			fmt.Println(err.Error())
 			return err
@@ -35,9 +35,9 @@ func PutParameter(svc ssmiface.SSMAPI, name *string, value *string, paramType *s
 }
 
 type ParameterStoreInput struct {
-	Name      *string
-	Value     *string
-	ParamType *string
+	Name      string
+	Value     string
+	ParamType string
 }
 
 func ParseParameter(values map[string]string, prefix string) []ParameterStoreInput {
@@ -50,7 +50,7 @@ func ParseParameter(values map[string]string, prefix string) []ParameterStoreInp
 			_paramType = "SecureString"
 		}
 		_name := prefix + key
-		output = append(output, ParameterStoreInput{Name: &_name, Value: &value, ParamType: &_paramType})
+		output = append(output, ParameterStoreInput{Name: _name, Value: value, ParamType: _paramType})
 	}
 	return output
 }
