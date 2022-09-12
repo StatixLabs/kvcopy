@@ -52,7 +52,7 @@
 ### 1. Shell (Mac/Linux)
 Install the latest version:
 ```
-curl -fsSL https://github.com/StatixLabs/clifig/raw/main/install.sh | bash
+curl -fsSL https://github.com/StatixLabs/kvcopy/raw/main/install.sh | bash
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -64,7 +64,7 @@ curl -fsSL https://github.com/StatixLabs/clifig/raw/main/install.sh | bash
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 ```
-clifig --input ssm --output env --profile default --region us-east-1 --prefix /test/
+kvcopy --input ssm --output env --profile default --region us-east-1 --prefix /test/
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
