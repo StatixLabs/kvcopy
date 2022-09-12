@@ -15,7 +15,7 @@ var _ = Describe("parameters", func() {
 			name := prefix + "key"
 			value := "value"
 			paramType := "String"
-			Expect(target.ParseParameter(testMap, prefix)).To(Equal([]target.ParameterStoreInput{{Name: &name, Value: &value, ParamType: &paramType}}))
+			Expect(target.ParseParameter(testMap, prefix)).To(ContainElements([]target.ParameterStoreInput{{Name: name, Value: value, ParamType: paramType}}))
 		})
 	})
 	Context("When given a map with sensative value, and a prefix", func() {
@@ -25,7 +25,19 @@ var _ = Describe("parameters", func() {
 			name := prefix + "key"
 			value := "value"
 			paramType := "SecureString"
-			Expect(target.ParseParameter(testMap, prefix)).To(Equal([]target.ParameterStoreInput{{Name: &name, Value: &value, ParamType: &paramType}}))
+			Expect(target.ParseParameter(testMap, prefix)).To(ContainElements([]target.ParameterStoreInput{{Name: name, Value: value, ParamType: paramType}}))
+		})
+	})
+	Context("When given multiple values in the map", func() {
+		testMap := map[string]string{"*secret": "password", "jedi": "blackandwhite", "buddy": "whiteandgrey"}
+		prefix := "/test/value/"
+		It("the values shouldn't be all the same.", func() {
+			Expect(target.ParseParameter(testMap, prefix)).To(ContainElements(
+				[]target.ParameterStoreInput{
+					{Name: prefix + "secret", Value: "password", ParamType: "SecureString"},
+					{Name: prefix + "jedi", Value: "blackandwhite", ParamType: "String"},
+					{Name: prefix + "buddy", Value: "whiteandgrey", ParamType: "String"},
+				}))
 		})
 	})
 })
