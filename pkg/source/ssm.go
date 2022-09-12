@@ -12,15 +12,17 @@ import (
 func SSM(sess *session.Session, region string, name string) (map[string]string, error) {
 	ssmsvc := ssm.New(sess, aws.NewConfig().WithRegion(region))
 	output := make(map[string]string)
-	param, err := ssmsvc.GetParametersByPath(&ssm.GetParametersByPathInput{
+	GetParameterByPathInput := ssm.GetParametersByPathInput{
 		Path:           aws.String(name),
 		WithDecryption: aws.Bool(true),
-	})
-	if err != nil {
-		return output, err
 	}
-	for _, parameter := range param.Parameters {
-		output[strings.ReplaceAll(*parameter.Name, name, "")] = *parameter.Value
+	if err := ssmsvc.GetParametersByPathPages(&GetParameterByPathInput, func(result *ssm.GetParametersByPathOutput, b bool) bool {
+		for _, parameter := range result.Parameters {
+			output[strings.ReplaceAll(*parameter.Name, name, "")] = *parameter.Value
+		}
+		return !b
+	}); err != nil {
+		return nil, err
 	}
 	return output, nil
 }
